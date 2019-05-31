@@ -12,25 +12,29 @@ const parser = require('./parser/parser');
  * @param {!express:Response} res HTTP response context.
  */
 exports.parser = (req, res) => {
-    const data = req.query;
+    const data = req.body;
     console.log('New incoming request:', data);
+    console.log('from :', req.query);
+    console.log('content type : ', req.get('content-type'));
     var fileToSend = '';
-    switch(data.type) {
+    res.setHeader('Content-Disposition', 'attachment; filename="parsed.html"');
+    res.setHeader('Access-Control-Allow-Methods', 'POST');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', [
+        'access-control-allow-headers',
+        'access-control-allow-methods',
+        'access-control-allow-origin',
+        'content-type'
+    ]);
+    switch(req.query.type) {
         case '0':
             console.log('Type html');
             file.download()
                 .then((fileContent) => {
-                    fileToSend = parser.toHtml(req.body, fileContent);
-                    res.setHeader('Content-Disposition', 'attachment; filename="parsed.html"');
-                    res.setHeader('Access-Control-Allow-Methods', 'POST');
-                    res.setHeader('Access-Control-Allow-Origin', '*');
-                    res.setHeader('Access-Control-Allow-Headers', [
-                        'access-control-allow-headers',
-                        'access-control-allow-methods',
-                        'access-control-allow-origin',
-                        'content-type'
-                    ]);
-                    res.status(200).send('<html>toussa</html>');
+                    console.log('data to parse : ', data.input);
+                    fileToSend = parser.toHtml(data.input, fileContent);
+
+                    res.status(200).send(fileToSend);
                 })
                 .catch((err) => {
                     res.status(404).send('KO');
@@ -39,12 +43,13 @@ exports.parser = (req, res) => {
             ;
             break;
         case '1':
-            console.log('Type mediawiki')
-            fileToSend = parser.toMediawiki(req.body);
+            console.log('Type mediawiki');
+            fileToSend = parser.toMediawiki(data.input);
             res.setHeader('Content-Disposition', 'attachment; filename="parsed.txt"');
             res.status(200).send(fileToSend);
             break;
         default:
+            console.log('Type unknown');
             res.status(403).send();
             break;
     }

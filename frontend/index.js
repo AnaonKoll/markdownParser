@@ -14,16 +14,16 @@ var editor = new Vue({
             this.input = e.target.value;
         },
         downloadHTML: function (e) {
-            axios.post(this.url + "?type=0", { params: { input: this.input }})
-                .then(response => {
-                    const url = window.URL.createObjectURL(new Blob([response.data]));
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.setAttribute('download', 'parsed.html');
-                    document.body.appendChild(link);
-                    link.click();
-                })
-                .catch(error => {});
+             backendApi(this, this.url + '?type=0', this.input)
+            .then(response => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'parsed.html');
+                document.body.appendChild(link);
+                link.click();
+            })
+            .catch(error => {});
         },
         downloadMediaWiki: function (e) {
 
