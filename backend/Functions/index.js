@@ -1,6 +1,6 @@
 const {Storage} = require('@google-cloud/storage');
 const storage = new Storage({projectId: "markdown-parser-242020"});
-const bucket = storage.bucket("markdown-parser-bucket");
+const bucket = storage.bucket("bucket-markdown-parser");
 const fs = require('fs');
 const file = bucket.file('template.html');
 const parser = require('./parser/parser');
@@ -16,6 +16,7 @@ exports.parser = (req, res) => {
     console.log('New incoming request:', data);
     console.log('from :', req.query);
     console.log('content type : ', req.get('content-type'));
+    console.log('data to parse : ', data.input);
     var fileToSend = '';
     res.setHeader('Content-Disposition', 'attachment; filename="parsed.html"');
     res.setHeader('Access-Control-Allow-Methods', 'POST');
@@ -31,9 +32,7 @@ exports.parser = (req, res) => {
             console.log('Type html');
             file.download()
                 .then((fileContent) => {
-                    console.log('data to parse : ', data.input);
                     fileToSend = parser.toHtml(data.input, fileContent);
-
                     res.status(200).send(fileToSend);
                 })
                 .catch((err) => {

@@ -15,18 +15,17 @@ var editor = new Vue({
         },
         downloadHTML: function (e) {
              backendApi(this, this.url + '?type=0', this.input)
-            .then(response => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'parsed.html');
-                document.body.appendChild(link);
-                link.click();
-            })
-            .catch(error => {});
+                .then(response => {
+                    fileDownloader(response.data, 'parsed.html');
+                })
+                .catch(error => {});
         },
         downloadMediaWiki: function (e) {
-
+            backendApi(this, this.url + '?type=1', this.input)
+                .then(response => {
+                    fileDownloader(response.data, 'parsed.txt');
+                })
+                .catch(error => {});
         }
     }
 })

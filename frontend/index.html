@@ -17,13 +17,14 @@
     <textarea :value="input" @input="update"></textarea>
     <div v-html="parsedMarkdown"></div>
     <div id="actions">
-        <button v-on:click="downloadHTML()" type="button">Download HTML</button>
-        <button v-on:click="downloadMediaWiki()" type="button">Download MediaWiki</button>
+        <button v-on:click="downloadHTML()" type="button">HTML</button>
+        <button v-on:click="downloadMediaWiki()" type="button">MediaWiki</button>
     </div>
 </div>
 
 <script type="text/javascript" src="lib/markdown.js"></script>
 <script type="text/javascript" src="lib/backend-api.js"></script>
+<script type="text/javascript" src="lib/file-downloader.js"></script>
 <script type="text/javascript" src="index.js"></script>
 </body>
 </html>
